@@ -1,0 +1,212 @@
+{
+  "name": "Input-TeleBot",
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0fcfdb90-f82f-4b7e-b9c0-830b16e4f3d1",
+              "leftValue": "={{ $json.files[0] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        208,
+        -608
+      ],
+      "id": "96ff1229-6dd0-47e6-96e7-6e2bfb1cdac6",
+      "name": "If",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "UR3vfknZZyWH1a3E",
+          "mode": "list"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        576,
+        -624
+      ],
+      "name": "Call Sub-VectorStore",
+      "id": "c6f10457-d274-401d-9513-685aa7e71af4",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "IH0NJODCOGGRwRDh",
+          "mode": "list",
+          "cachedResultName": "Sub-MainAgent"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "chatInput": "={{ $json.message.text }}",
+            "sessionId": "={{ $json.message.chat.id }}"
+          },
+          "matchingColumns": [
+            "chatInput"
+          ],
+          "schema": [
+            {
+              "id": "chatInput",
+              "displayName": "chatInput",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "sessionId",
+              "displayName": "sessionId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        384,
+        -336
+      ],
+      "name": "Sub-MainAgent",
+      "id": "777a9ce3-93a8-48db-9c80-2834b0e405bf"
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -80,
+        -336
+      ],
+      "id": "a068945b-820f-49d6-86cb-94d6df3f2cef",
+      "name": "Telegram Trigger",
+      "webhookId": "4dc282e8-0e7a-4399-a5ea-bf9036895878",
+      "credentials": {
+        "telegramApi": {
+          "id": "1PG6GiVByjR384Qx",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        640,
+        -336
+      ],
+      "id": "4a38f59c-9b13-434b-b1a9-2fcd12e0a679",
+      "name": "Send a text message",
+      "webhookId": "64cf3240-a840-4838-950f-1dca6e6ad8ee",
+      "credentials": {
+        "telegramApi": {
+          "id": "1PG6GiVByjR384Qx",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Call Sub-VectorStore",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sub-MainAgent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Sub-MainAgent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "0c825aa1-c751-4bc0-8409-60297c3da21b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d682ee0211f533a8ae829ad3c62f7d453353ba25ed4ccc68594055b201bad6a0"
+  },
+  "id": "PpvUn6UIXTCVR4FW",
+  "tags": []
+}

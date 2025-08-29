@@ -1,0 +1,125 @@
+{
+  "name": "Sub-WebSearch",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1408,
+        -400
+      ],
+      "id": "531a7613-214d-4efc-bbd3-5702b9b4fa0b",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Gz3YE4HQTkzy3t97",
+          "name": "pi accGoogle Gemini Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-goog-api-key",
+              "value": "AIzaSyC_zYssSeGJPFyhxr_kMNsrdneyBXkpSmY"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"contents\": [\n    {\n      \"parts\": [\n        {\n          \"text\": \"{{ $fromAI(\"question\",\"pertanyaan yang ingin dicari\") }}\"\n        }\n      ]\n    }\n  ],\n  \"tools\": [\n    {\n      \"google_search\": {}\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        1552,
+        -384
+      ],
+      "id": "35e96a35-4080-4348-baff-b6ef7e8b3c74",
+      "name": "WebSearch"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "b5838671-5d68-4950-9632-9738f171cf02",
+      "typeVersion": 1.1,
+      "name": "Start",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        1152,
+        -624
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.query }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        1408,
+        -624
+      ],
+      "id": "dfe9b5a6-1b51-4e06-be2c-6cadddfef811",
+      "name": "AI Agent"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "WebSearch": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a128eefc-279f-401c-8fca-42848787d933",
+  "meta": {
+    "instanceId": "d682ee0211f533a8ae829ad3c62f7d453353ba25ed4ccc68594055b201bad6a0"
+  },
+  "id": "m4Idb58KUZPRYbj3",
+  "tags": []
+}

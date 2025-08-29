@@ -1,0 +1,139 @@
+{
+  "name": "Sub-VectorStore",
+  "nodes": [
+    {
+      "parameters": {
+        "modelName": "models/gemini-embedding-001"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        544,
+        -576
+      ],
+      "id": "1ebb26f9-51b1-405a-a413-bf73e6b6a325",
+      "name": "Embeddings Google Gemini",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "Gz3YE4HQTkzy3t97",
+          "name": "pi accGoogle Gemini Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        720,
+        -576
+      ],
+      "id": "04d6144f-c15e-4de2-a6b3-0aeac665ebfb",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "embeddingBatchSize": 32,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        464,
+        -784
+      ],
+      "id": "49d92e13-5dcf-42df-abca-568a4f4b2ae4",
+      "name": "Supabase Vector Store",
+      "credentials": {
+        "supabaseApi": {
+          "id": "4mjwA5UJP7tm4JuY",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Input Document jke Vektor Store",
+        "height": 416,
+        "width": 544
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        384,
+        -848
+      ],
+      "typeVersion": 1,
+      "id": "dc47fdbc-9b3a-4ecd-81bb-0a95ba079600",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "id": "1de3a074-a8a2-4a26-acdb-273be128f623",
+      "typeVersion": 1.1,
+      "name": "Start",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        256,
+        -784
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Embeddings Google Gemini": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "30720455-a8f7-44ff-bd47-8ae0ea0f6806",
+  "meta": {
+    "instanceId": "d682ee0211f533a8ae829ad3c62f7d453353ba25ed4ccc68594055b201bad6a0"
+  },
+  "id": "UR3vfknZZyWH1a3E",
+  "tags": []
+}
